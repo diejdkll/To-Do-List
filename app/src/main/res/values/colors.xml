@@ -10,5 +10,7 @@
 
     <color name="to_do_black">#1d1d1d</color>
     <color name="to_do_gray">#bababa</color>
+    <color name="to_do_dark_gray">#5a5a5a</color>
     <color name="to_do_bright_gray">#EDEDED</color>
+    <color name="to_do_red">#D50000</color>
 </resources>

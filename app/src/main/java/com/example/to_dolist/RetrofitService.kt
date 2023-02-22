@@ -16,4 +16,11 @@ interface RetrofitService {
     fun login(
         @FieldMap params: HashMap<String, Any>
     ): Call<User>
+
+    // Join
+    @POST("user/signup/")
+    @FormUrlEncoded
+    fun join(
+        @FieldMap params: HashMap<String, Any>
+    ): Call<User>
 }
