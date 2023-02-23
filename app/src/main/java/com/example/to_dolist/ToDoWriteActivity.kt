@@ -41,9 +41,11 @@ class ToDoWriteActivity : AppCompatActivity() {
 
             retrofitService.write(header, body).enqueue(object : Callback<Any> {
                 override fun onResponse(call: Call<Any>, response: Response<Any>) {
+                    onBackPressedDispatcher.onBackPressed()
                 }
 
                 override fun onFailure(call: Call<Any>, t: Throwable) {
+                    onBackPressedDispatcher.onBackPressed()
                 }
             })
         }
