@@ -6,6 +6,8 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.HeaderMap
 import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Path
 
 class User(
     val id: Int,
@@ -48,4 +50,11 @@ interface RetrofitService {
     fun getList(
         @HeaderMap headers: Map<String, String>,
     ): Call<ArrayList<ToDo>>
+
+    // ChangeComplete
+    @PUT("to-do/complete/{todoId}")
+    fun changeComplete(
+        @HeaderMap headers: Map<String, String>,
+        @Path("todoId") todoId: Int
+    ): Call<Any>
 }

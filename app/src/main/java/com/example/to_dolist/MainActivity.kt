@@ -36,6 +36,12 @@ class MainActivity : AppCompatActivity() {
         getToDoList()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        getToDoList()
+    }
+
     fun getToDoList() {
         val retrofit = Retrofit.Builder()
             .baseUrl("http://mellowcode.org/")
@@ -72,12 +78,41 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
+
+    fun changeToDoComplete(todoId: Int){
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://mellowcode.org/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val retrofitService = retrofit.create(RetrofitService::class.java)
+
+        val header = HashMap<String, String>()
+        val sp = this.getSharedPreferences(
+            "user_info",
+            Context.MODE_PRIVATE
+        )
+        val token = sp.getString("token", "")
+        header.put("Authorization", "token " + token!!)
+
+        retrofitService.changeComplete(header, todoId).enqueue(object : Callback<Any>{
+            override fun onResponse(call: Call<Any>, response: Response<Any>) {
+                if (response.isSuccessful){
+                    getToDoList()
+                }
+            }
+
+            override fun onFailure(call: Call<Any>, t: Throwable) {
+                getToDoList()
+            }
+        })
+    }
 }
 
 class ToDoListRecyclerAdapter(
     val todoList: ArrayList<ToDo>,
     val inflater: LayoutInflater,
-    val context: Context
+    val activity: MainActivity
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var previousDate: String = ""
@@ -92,6 +127,10 @@ class ToDoListRecyclerAdapter(
             dateTextView = binding.date
             content = binding.content
             isComplete = binding.isComplete
+
+            isComplete.setOnClickListener {
+                activity.changeToDoComplete(todoList.get(adapterPosition).id)
+            }
         }
     }
 
@@ -103,6 +142,10 @@ class ToDoListRecyclerAdapter(
         init {
             content = binding.content
             isComplete = binding.isComplete
+
+            isComplete.setOnClickListener {
+                activity.changeToDoComplete(todoList.get(adapterPosition).id)
+            }
         }
     }
 
@@ -131,8 +174,6 @@ class ToDoListRecyclerAdapter(
         }
     }
 
-
-
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val todo = todoList.get(position)
         if (holder is DateViewHolder) {
@@ -141,14 +182,14 @@ class ToDoListRecyclerAdapter(
             if (todo.is_complete) {
                 (holder as DateViewHolder).isComplete.setImageDrawable(
                     ContextCompat.getDrawable(
-                        context,
+                        activity,
                         R.drawable.btn_radio_check
                     )
                 )
             } else {
                 (holder as DateViewHolder).isComplete.setImageDrawable(
                     ContextCompat.getDrawable(
-                        context,
+                        activity,
                         R.drawable.btn_radio
                     )
                 )
@@ -158,14 +199,14 @@ class ToDoListRecyclerAdapter(
             if (todo.is_complete) {
                 (holder as ContentViewHolder).isComplete.setImageDrawable(
                     ContextCompat.getDrawable(
-                        context,
+                        activity,
                         R.drawable.btn_radio_check
                     )
                 )
             } else {
                 (holder as ContentViewHolder).isComplete.setImageDrawable(
                     ContextCompat.getDrawable(
-                        context,
+                        activity,
                         R.drawable.btn_radio
                     )
                 )
