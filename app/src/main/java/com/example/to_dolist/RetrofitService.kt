@@ -8,6 +8,7 @@ import retrofit2.http.HeaderMap
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 class User(
     val id: Int,
@@ -57,4 +58,11 @@ interface RetrofitService {
         @HeaderMap headers: Map<String, String>,
         @Path("todoId") todoId: Int
     ): Call<Any>
+
+    // Search
+    @GET("to-do/search/")
+    fun search(
+        @HeaderMap headers: Map<String, String>,
+        @Query("keyword") keyword: String
+    ): Call<ArrayList<ToDo>>
 }
